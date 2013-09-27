@@ -1,9 +1,13 @@
 package shapeless.contrib.scalaz
 
+import scalaz.LensFamily
+import shapeless.HList
+import shapeless.ops.hlist._
+
 trait LensOps[A, B] {
 
   def asScalaz: scalaz.Lens[A, B] =
-    scalaz.LensFamily.lensg(asShapeless.set, asShapeless.get)
+    LensFamily.lensg(asShapeless.set, asShapeless.get)
 
   def asShapeless: shapeless.Lens[A, B] =
     new shapeless.Lens[A, B] {
@@ -22,6 +26,15 @@ trait Lenses {
   implicit def shapelessLensOps[A, B](l: shapeless.Lens[A, B]) = new LensOps[A, B] {
     override val asShapeless = l
   }
+
+  /** A variant of [shapeless.Lens]`.hlistSelectLens` that produces a
+    * lens family instead.
+    */
+  def selectLensFamily[S <: HList, T, A, B]
+      (implicit selector: Selector[S, A],
+       replacer: Replacer.Aux[S, A, B, (_, T)]): LensFamily[S, T, A, B] =
+    LensFamily lensFamilyu ((s, b) => replacer(s, b)._2,
+                            s => selector(s))
 
 }
 
