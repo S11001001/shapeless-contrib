@@ -1,8 +1,9 @@
 package shapeless.contrib.scalaz
 
 import scalaz.LensFamily
-import shapeless.HList
+import shapeless.{HList, WitnessWith}
 import shapeless.ops.hlist._
+import shapeless.ops.record.{Selector => RSelector, _}
 
 trait LensOps[A, B] {
 
@@ -34,7 +35,13 @@ trait Lenses {
       (implicit selector: Selector[S, A],
        replacer: Replacer.Aux[S, A, B, (_, T)]): LensFamily[S, T, A, B] =
     LensFamily lensFamilyu ((s, b) => replacer(s, b)._2,
-                            s => selector(s))
+                            selector(_))
+
+  def recordLensFamily[S <: HList, B](k: WitnessWith[({type λ[α] = Selector[S, α]})#λ])
+                      (implicit modifier: Modifier[S, k.T, k.Out, B])
+    : LensFamily[S, modifier.Out, k.instance.Out, B] =
+    LensFamily lensFamilyu ((l, v) => modifier(l, _ => v),
+                            k.instance(_))
 
 }
 
