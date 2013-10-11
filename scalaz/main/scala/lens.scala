@@ -33,10 +33,13 @@ trait Lenses {
     */
   def selectLensFamily[S <: HList, T, A, B]
       (implicit selector: Selector[S, A],
-       replacer: Replacer.Aux[S, A, B, (_, T)]): LensFamily[S, T, A, B] =
+       replacer: Replacer.Aux[S, A, B, (A, T)]): LensFamily[S, T, A, B] =
     LensFamily lensFamilyu ((s, b) => replacer(s, b)._2,
                             selector(_))
 
+  /** A variant of [shapeless.Lens]`.recordLens` that produces a lens
+    * family instead.
+    */
   def recordLensFamily[S <: HList, B](k: WitnessWith[({type λ[α] = Selector[S, α]})#λ])
                       (implicit modifier: Modifier[S, k.T, k.Out, B])
     : LensFamily[S, modifier.Out, k.instance.Out, B] =

@@ -1,6 +1,6 @@
 package shapeless.contrib.scalaz
 
-import shapeless.Lens
+import shapeless.{::, HNil, Lens}
 import shapeless.Lens._
 import shapeless.Nat._
 import shapeless.contrib.scalacheck._
@@ -30,6 +30,11 @@ class LensTest extends Spec {
   checkAll("nested case class >> _0", lens.laws(bnLens.asScalaz))
   checkAll("nested case class >> _1", lens.laws(bxLens.asScalaz))
 
+  type SIL[A] = String :: Int :: List[A] :: HNil
+  def silString[A] = selectLensFamily[SIL[A], SIL[A], String, String]
+  def silA[A, B] = selectLensFamily[SIL[A], SIL[B], List[A], List[B]]
+
+  checkAll("head select lens", lens.laws(silString[Int]))
 }
 
 // vim: expandtab:ts=2:sw=2
