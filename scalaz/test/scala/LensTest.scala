@@ -3,6 +3,7 @@ package shapeless.contrib.scalaz
 import shapeless.{::, HNil, Lens}
 import shapeless.Lens._
 import shapeless.Nat._
+import shapeless.test.illTyped
 import shapeless.contrib.scalacheck._
 
 import org.specs2.scalaz.Spec
@@ -38,6 +39,8 @@ class LensTest extends Spec {
 
   checkAll("head select lens", lens.laws(silString[Int]))
   checkAll("3rd select lens", lens.laws(silA[Int, Int]))
+
+  illTyped("selectLensFamily[SIL[Int], SIL[Int], Long, Long]")
 }
 
 // vim: expandtab:ts=2:sw=2
