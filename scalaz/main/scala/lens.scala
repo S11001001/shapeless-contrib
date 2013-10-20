@@ -37,7 +37,7 @@ trait Lenses {
     LensFamily lensFamilyu ((s, b) => replacer(s, b)._2,
                             selector(_))
 
-  /** A variant of [shapeless.Lens]`.recordLens` that produces a lens
+  /** A variant of [[shapeless.Lens]]`.recordLens` that produces a lens
     * family instead.
     */
   def recordLensFamily[S <: HList, B](k: WitnessWith[({type λ[α] = Selector[S, α]})#λ])

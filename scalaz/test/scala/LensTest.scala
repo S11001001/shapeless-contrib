@@ -7,11 +7,13 @@ import shapeless.contrib.scalacheck._
 
 import org.specs2.scalaz.Spec
 
+import scalaz.{Equal, Order} // XXX needed by derived Equal
 import scalaz.scalacheck.ScalazProperties._
 
 class LensTest extends Spec {
 
   import scalaz.std.anyVal._
+  import scalaz.std.list._
   import scalaz.std.string._
 
   case class TwoElem(n: Int, x: String)
