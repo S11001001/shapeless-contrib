@@ -1,8 +1,10 @@
 package shapeless.contrib.scalaz
 
-import shapeless.{::, HNil, Lens}
+import shapeless.{::, HNil, Lens, Witness}
 import shapeless.Lens._
 import shapeless.Nat._
+import shapeless.record.FieldType
+import shapeless.syntax.singleton._
 import shapeless.test.illTyped
 import shapeless.contrib.scalacheck._
 
@@ -41,6 +43,22 @@ class LensTest extends Spec {
   checkAll("3rd select lens", lens.laws(silA[Int, Int]))
 
   illTyped("selectLensFamily[SIL[Int], SIL[Int], Long, Long]")
+
+  val (strT, numT, laT) = (Witness("str"), Witness("num"), Witness("la"))
+  type RSIL[A] = ((strT.T FieldType String) :: (numT.T FieldType Int)
+                  :: (laT.T FieldType List[A]) :: HNil)
+/*
+  def rsilString[A, B] = recordLensFamily[RSIL[A], B]("str")
+  def rsilA[A, B] = recordLensFamily[RSIL[A], List[B]]("la")
+
+  rsilString[Int, Int]
+  rsilA[Int, String]
+
+  checkAll("head record lens", lens.laws(rsilString[Int, String]))
+  checkAll("3rd record lens", lens.laws(rsilA[Int, Int]))
+*/
+
+  illTyped("""recordLensFamily[RSIL[A], B]("st")""")
 }
 
 // vim: expandtab:ts=2:sw=2
