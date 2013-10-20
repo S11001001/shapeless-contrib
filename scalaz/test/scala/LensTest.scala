@@ -37,6 +37,7 @@ class LensTest extends Spec {
   def silA[A, B] = selectLensFamily[SIL[A], SIL[B], List[A], List[B]]
 
   checkAll("head select lens", lens.laws(silString[Int]))
+  checkAll("3rd select lens", lens.laws(silA[Int, Int]))
 }
 
 // vim: expandtab:ts=2:sw=2
