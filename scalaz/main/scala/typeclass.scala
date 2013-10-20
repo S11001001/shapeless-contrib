@@ -165,6 +165,9 @@ trait Instances {
       new IsomorphicOrder[A, B] { def B = b; def to = ab; def from = ba }
   }
 
+  // XXX that this seems necessary to compile Equal[some hlist] et al
+  // seems an oversight somewhere
+  implicit val EmptyTC = new Empty{}.emptyProduct
 
   // Boilerplate
 
