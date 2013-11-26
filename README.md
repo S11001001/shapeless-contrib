@@ -15,9 +15,9 @@ To use the latest version, include the following in your `build.sbt`:
 
 ```scala
 libraryDependencies ++= Seq(
-  "org.typelevel" %% "shapeless-scalacheck" % "0.1.1",
-  "org.typelevel" %% "shapeless-spire" % "0.1.1",
-  "org.typelevel" %% "shapeless-scalaz" % "0.1.1"
+  "org.typelevel" %% "shapeless-scalacheck" % "0.1.2",
+  "org.typelevel" %% "shapeless-spire" % "0.1.2",
+  "org.typelevel" %% "shapeless-scalaz" % "0.1.2"
 )
 ```
 
@@ -35,10 +35,12 @@ Examples
 
 ### Scalaz + Shapeless = Profit
 
+_Note:_ The 0.1.x series of this library depends on shapeless 1.2.x, whereas the newer 0.2.x series depends on shapeless 2.0.0.
+
 The combination of these two libraries allows for some nifty utility functions related to `scalaz.Applicative`:
 
 * lifting arbitrary functions (i.e. a generalized `liftA1`, `liftA2`, ...)
-* sequencing an `HList` (just like sequencing a `List`)
+* sequencing and traversing an `HList` (just like sequencing and traversing a `List`)
 
 ```scala
 import shapeless._
@@ -72,6 +74,8 @@ sequence(v1 :: v2 :: HNil)
 
 // resulting type: `Validation[String, Int :: Float :: HNil]`
 ```
+
+Traversing works the same way, but you will also have to specify a `shapeless.Poly` which maps over the `HList` first.
 
 In addition to that, it also provides a conversion between their lens types:
 

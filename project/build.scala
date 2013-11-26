@@ -11,8 +11,8 @@ import com.typesafe.sbt.pgp.PgpKeys._
 
 object ShapelessContribBuild extends Build {
 
-  val shapelessVersion = "2.0.0-M1"
-  val scalazVersion = "7.0.0"
+  val shapelessVersion = "2.0.0-SNAPSHOT"
+  val scalazVersion = "7.0.3"
   val scalacheckVersion = "1.10.0"
 
 
@@ -44,14 +44,8 @@ object ShapelessContribBuild extends Build {
     libraryDependencies +=
       "com.chuusai" %% "shapeless" % shapelessVersion cross CrossVersion.full,
 
-    dependencyOverrides ++= Set(
-      "org.scala-lang" % "scala-library" % scalaVersion.value,
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value
-    ),
-
     resolvers += Resolver.sonatypeRepo("releases"),
-
-    conflictManager := ConflictManager.strict,
+    resolvers += Resolver.sonatypeRepo("snapshots"),
 
     sourceDirectory <<= baseDirectory(identity),
 
@@ -123,9 +117,7 @@ object ShapelessContribBuild extends Build {
       name := "shapeless-scalacheck",
       hasMacros,
       libraryDependencies ++= Seq(
-        "org.scalaz" %% "scalaz-core" % scalazVersion,
-        "org.scalacheck" %% "scalacheck" % scalacheckVersion,
-        "org.scalaz" %% "scalaz-scalacheck-binding" % scalazVersion
+        "org.scalacheck" %% "scalacheck" % scalacheckVersion
       )
     )
   )
@@ -143,7 +135,7 @@ object ShapelessContribBuild extends Build {
         "org.specs2" %% "specs2" % "1.12.3" % "test",
         "org.scalacheck" %% "scalacheck" % scalacheckVersion % "test",
         "org.scalaz" %% "scalaz-scalacheck-binding" % scalazVersion % "test",
-        "org.typelevel" %% "scalaz-specs2" % "0.1.4" % "test"
+        "org.typelevel" %% "scalaz-specs2" % "0.1.5" % "test"
       )
     )
   )
@@ -158,8 +150,8 @@ object ShapelessContribBuild extends Build {
       libraryDependencies ++= Seq(
         "org.scalatest" %% "scalatest" % "1.9.1" % "test",
         "org.scalacheck" %% "scalacheck" % scalacheckVersion % "test",
-        "org.spire-math" %% "spire" % "0.4.0-M3",
-        "org.spire-math" %% "spire-scalacheck-binding" % "0.4.0-M3" % "test"
+        "org.spire-math" %% "spire" % "0.6.1",
+        "org.spire-math" %% "spire-scalacheck-binding" % "0.6.1" % "test"
       )
     )
   )

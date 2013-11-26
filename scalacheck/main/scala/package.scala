@@ -2,23 +2,37 @@ package shapeless.contrib
 
 import shapeless._
 
-import scalaz._
-import scalaz.syntax.apply._
-import scalaz.scalacheck.ScalaCheckBinding._
-
 import org.scalacheck.{Gen, Arbitrary}
 
 package object scalacheck {
 
-  implicit def ArbitraryI: ProductTypeClass[Arbitrary] = new ProductTypeClass[Arbitrary] {
+  implicit def ArbitraryI: TypeClass[Arbitrary] = new TypeClass[Arbitrary] {
 
     def emptyProduct = Arbitrary(Gen.value(HNil))
 
-    def product[F, T <: HList](f: Arbitrary[F], t: Arbitrary[T]) =
-      (f |@| t) { _ :: _ }
+    def product[H, T <: HList](h: Arbitrary[H], t: Arbitrary[T]) =
+      Arbitrary(Gen.sized { size =>
+        if (size == 0)
+          Gen.fail
+        else {
+          val half = size.abs/2
+          val resizedH = Gen.resize(half, h.arbitrary)
+          val resizedT = Gen.resize(half, t.arbitrary)
+          for { h <- resizedH; t <- resizedT }
+            yield h :: t
+        }})
+
+    def coproduct[L, R <: Coproduct](l: => Arbitrary[L], r: => Arbitrary[R]) = {
+      lazy val mappedL = l.arbitrary.map(Inl(_): L :+: R)
+      lazy val mappedR = r.arbitrary.map(Inr(_): L :+: R)
+      Arbitrary(for {
+        which <- Gen.oneOf(false, true)
+        result <- if (which) mappedL else mappedR
+      } yield result)
+    }
 
     def project[A, B](b: => Arbitrary[B], ab: A => B, ba: B => A) =
-      b.map(ba)
+      Arbitrary(b.arbitrary.map(ba))
 
   }
 
