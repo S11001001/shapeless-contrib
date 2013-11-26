@@ -38,11 +38,11 @@ package object scalacheck {
 
   implicit def deriveArbitrary[T] = macro TypeClass.derive_impl[Arbitrary, T]
 
-  implicit val arbHNil: Arbitrary[HNil] = Arbitrary(Gen.value(HNil))
+  implicit val arbHNil: Arbitrary[HNil] = ArbitraryI.emptyProduct
 
   implicit def arbHCons[H, T <: HList]
     (implicit h: Arbitrary[H], t: Arbitrary[T]): Arbitrary[H :: T] =
-    ^(h, t)(_ :: _)
+    ArbitraryI.product(h, t)
 
 }
 
